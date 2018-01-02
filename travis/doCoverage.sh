@@ -20,14 +20,14 @@ env | sort
 mkdir Coverage || true
 cd Coverage
 cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
-      -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
+      -DCMAKE_BUILD_TYPE=Coverage \
       ..
 
 # Build the Code
 make
 
 # Run the tests
-ctest -T Memcheck
+make test
 
 # Post the coveralls result
 cd ..
