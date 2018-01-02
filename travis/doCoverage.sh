@@ -21,6 +21,7 @@ mkdir Coverage || true
 cd Coverage
 cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
       -DCMAKE_BUILD_TYPE=Coverage \
+      --build .
       ..
 
 # Build the Code
