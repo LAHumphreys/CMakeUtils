@@ -1,4 +1,10 @@
 #!/usr/bin/env sh
+
+#
+# (c) Notice: Travis processor configuration file taken from the GTtest CI
+#             build config
+#
+
 set -evx
 
 # if possible, ask for the precise number of processors,
@@ -22,14 +28,14 @@ cd Coverage
 cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
       -DCMAKE_BUILD_TYPE=Coverage \
       --build .
-      ..
+      .. || exit
 
 # Build the Code
-make
+make || exit
 
 # Run the tests
-make test
+make test || exit
 
 # Post the coveralls result
 cd ..
-coveralls -r . -b Coverage -e dep -e Build -e test --gcov gcov-6 --verbose 
+coveralls -r . -b Coverage -e dep -e Build -e test --gcov gcov-6
