@@ -21,12 +21,19 @@ MAKEFLAGS="j${NPROCESSORS}"
 export MAKEFLAGS
 
 env | sort
+DEPS_LOCATION="$PWD/deps/build/lib/cmake"
+if [[ -e $DEPS_LOCATION ]]; then
+    DEPS_FLAGS="-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION"
+else
+    DEPS_FLAGS=""
+fi
 
 # Generate the build tree
 mkdir Coverage || true
 cd Coverage
 cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
       -DCMAKE_BUILD_TYPE=Coverage \
+      $DEPS_FLAGS 
       --build . .. || exit
 
 # Build the Code
