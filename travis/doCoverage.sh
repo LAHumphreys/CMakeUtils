@@ -37,4 +37,5 @@ make test || exit
 
 # Post the coveralls result
 cd ..
-coveralls -r . -b Coverage -e dep -e Build -e test --gcov gcov-6
+
+coveralls -r . -b Coverage -e CMakeUtils -e dep -e Coverage/CmakeFiles -e Build -e test --gcov gcov-6 $@
