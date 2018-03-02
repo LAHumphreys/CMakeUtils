@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 #
 # (c) Notice: Travis processor configuration file taken from the GTtest CI
