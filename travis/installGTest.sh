@@ -29,6 +29,6 @@ make
 # NOTE: If we don't do this, the old src directory is left in place, which
 #       confuses rapidjson who will then try to build against it.
 #
-sudo apt-get -y remove googletest
+sudo apt-get -y remove libgtest-dev
 
 sudo make install
