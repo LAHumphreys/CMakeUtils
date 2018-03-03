@@ -22,4 +22,13 @@ cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
       -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
       ../gtest
 make
+
+#
+# Remove the old pacakge, we're about to install our own
+#
+# NOTE: If we don't do this, the old src directory is left in place, which
+#       confuses rapidjson who will then try to build against it.
+#
+sudo apt-get -y remove googletest
+
 sudo make install
