@@ -36,5 +36,4 @@ mkdir -p Build
 cd Build
 cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" "-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION" .. || exit 1
 make || exit 1
-make install || exit 1
 cd ..
