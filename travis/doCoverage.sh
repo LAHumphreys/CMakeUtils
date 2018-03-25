@@ -7,6 +7,13 @@
 
 set -evx
 
+pushToCoveralls=true
+
+if [[ "$1" == "-nopush" ]]; then
+    pushToCoveralls=false
+    shift
+fi
+
 # if possible, ask for the precise number of processors,
 # otherwise take 2 processors as reasonable default; see
 # https://docs.travis-ci.com/user/speeding-up-the-build/#Makefile-optimization
@@ -48,7 +55,11 @@ make || exit
 # Run the tests
 make test || exit
 
-# Post the coveralls result
 cd ..
 
-coveralls -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  gcov-6 $@
+if [[ $pushToCoveralls == true ]]; then
+    # Post the coveralls result
+    coveralls -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  gcov-7 $@
+fi
+
+exit 0

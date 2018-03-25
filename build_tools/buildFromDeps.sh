@@ -9,6 +9,19 @@ else
     exit 1
 fi
 
+# if possible, ask for the precise number of processors,
+# otherwise take 2 processors as reasonable default; see
+# https://docs.travis-ci.com/user/speeding-up-the-build/#Makefile-optimization
+if [ -x /usr/bin/getconf ]; then
+    NPROCESSORS=$(/usr/bin/getconf _NPROCESSORS_ONLN)
+else
+    NPROCESSORS=2
+fi
+
+# Tell make to use the processors. No preceding '-' required.
+MAKEFLAGS="j${NPROCESSORS}"
+export MAKEFLAGS
+
 # Find GTest doesn't have the courtesy to look in the cmake prefix location...
 if [[ -e "$DEPS_ROOT/include/gtest/gtest.h" ]]; then
     export GTEST_ROOT="$DEPS_ROOT"
