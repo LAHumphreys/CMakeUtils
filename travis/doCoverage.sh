@@ -21,11 +21,17 @@ MAKEFLAGS="j${NPROCESSORS}"
 export MAKEFLAGS
 
 env | sort
-DEPS_LOCATION="$PWD/deps/build/lib/cmake"
+DEPS_ROOT="$PWD/deps/build"
+DEPS_LOCATION="$DEPS_ROOT/lib/cmake"
 if [[ -e $DEPS_LOCATION ]]; then
     DEPS_FLAGS="-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION"
 else
     DEPS_FLAGS=""
+fi
+
+# Find GTest doesn't have the courtesy to look in the cmake prefix location...
+if [[ -e "$DEPS_ROOT/include/gtest/gtest.h" ]]; then
+    export GTEST_ROOT="$DEPS_ROOT"
 fi
 
 # Generate the build tree
