@@ -6,11 +6,9 @@ if [[ "$1" == "-nobuild" ]]; then
     shift
 fi
 
-DEPS_ROOT=$PWD/deps
-if [[ "$1" == "" ]]; then
-    echo "No deps directory provided, falling back to: $DEPS_ROOT"
-else
-    DEPS_ROOT=$1
+if [[ "DEPS_ROOT" == "" ]]; then
+    DEPS_ROOT=$PWD/deps
+    echo "No deps directory (DEPS_ROOT) provided, falling back to: $DEPS_ROOT"
 fi
 DEPS_BUILD=$DEPS_ROOT/build
 
