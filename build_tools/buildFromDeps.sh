@@ -1,11 +1,17 @@
 #!/bin/bash
 
-DEPS_LOCATION="$PWD/deps/build/lib/cmake"
+DEPS_ROOT="$PWD/deps/build"
+DEPS_LOCATION="$DEPS_ROOT/lib/cmake"
 if [[ -e $DEPS_LOCATION ]]; then
     echo "Building project..."
 else
     echo "Dependencies must be built first"
     exit 1
+fi
+
+# Find GTest doesn't have the courtesy to look in the cmake prefix location...
+if [[ -e "$DEPS_ROOT/include/gtest/gtest.h" ]]; then
+    export GTEST_ROOT="$DEPS_ROOT"
 fi
 
 mkdir -p Build
