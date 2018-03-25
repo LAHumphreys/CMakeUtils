@@ -6,12 +6,13 @@ if [[ "$1" == "-nobuild" ]]; then
     shift
 fi
 
-DEPS_BUILD=$PWD/deps/build
+DEPS_ROOT=$PWD/deps
 if [[ "$1" == "" ]]; then
-    echo "No install directory provided, falling back to: $DEPS_BUILD"
+    echo "No deps directory provided, falling back to: $DEPS_ROOT"
 else
-    DEPS_BUILD=$1
+    DEPS_ROOT=$1
 fi
+DEPS_BUILD=$DEPS_ROOT/build
 
 DEPS_CMAKE_DEPO=$DEPS_BUILD/lib/cmake
 mkdir -p $DEPS_BUILD
@@ -35,19 +36,19 @@ for dep in ${!depList[@]}; do
 if [[ -e deps/$dep ]]; then
     echo "Existing $dep directory, no need to clone"
 else
-    git clone ${depList[$dep]} deps/$dep || exit 1
+    git clone ${depList[$dep]} $DEPS_ROOT/$dep || exit 1
 fi
 done
 
 for dep in ${!depList[@]}; do
-    mkdir -p deps/$dep/build
+    mkdir -p $DEPS_ROOT/$dep/build
 
-    pushd deps/$dep || exit 1
+    pushd $DEPS_ROOT/$dep || exit 1
 
     git pull
 
     if [[ -e buildDeps.sh ]]; then
-        ./buildDeps.sh $DEPS_FLAGS $DEPS_BUILD || exit 1
+        ./buildDeps.sh $DEPS_FLAGS $DEPS_ROOT || exit 1
     fi
 
 
