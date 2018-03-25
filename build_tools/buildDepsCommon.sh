@@ -1,4 +1,4 @@
-if [[ "DEPS_ROOT" == "" ]]; then
+if [[ "$DEPS_ROOT" == "" ]]; then
     DEPS_ROOT=$PWD/deps
     echo "No deps directory (DEPS_ROOT) provided, falling back to: $DEPS_ROOT"
 fi

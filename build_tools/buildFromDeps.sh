@@ -1,11 +1,16 @@
 #!/bin/bash
 
-DEPS_ROOT="$PWD/deps/build"
-DEPS_LOCATION="$DEPS_ROOT/lib/cmake"
+if [[ "$DEPS_ROOT" == "" ]]; then
+    DEPS_ROOT=$PWD/deps
+    echo "No deps directory (DEPS_ROOT) provided, falling back to: $DEPS_ROOT"
+fi
+DEPS_BUILD=$DEPS_ROOT/build
+
+DEPS_LOCATION="$DEPS_BUILD/lib/cmake"
 if [[ -e $DEPS_LOCATION ]]; then
     echo "Building project..."
 else
-    echo "Dependencies must be built first"
+    echo "Dependencies must be built first: $DEPS_LOCATION"
     exit 1
 fi
 
@@ -23,12 +28,13 @@ MAKEFLAGS="j${NPROCESSORS}"
 export MAKEFLAGS
 
 # Find GTest doesn't have the courtesy to look in the cmake prefix location...
-if [[ -e "$DEPS_ROOT/include/gtest/gtest.h" ]]; then
-    export GTEST_ROOT="$DEPS_ROOT"
+if [[ -e "$DEPS_BUILD/include/gtest/gtest.h" ]]; then
+    export GTEST_ROOT="$DEPS_BUILD"
 fi
 
 mkdir -p Build
 cd Build
-cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION" .. || exit 1
+cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" "-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION" .. || exit 1
 make || exit 1
+make install
 cd ..
