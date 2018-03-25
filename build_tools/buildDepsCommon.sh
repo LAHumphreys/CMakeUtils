@@ -7,6 +7,7 @@ fi
 
 DEPS_CMAKE_DEPO=$DEPS_BUILD/lib/cmake
 mkdir -p $DEPS_BUILD
+mkdir -p $DEPS_CMAKE_DEPO
 
 
 for dep in ${!depList[@]}; do
