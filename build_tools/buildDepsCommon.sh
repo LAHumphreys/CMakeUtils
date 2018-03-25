@@ -23,7 +23,7 @@ export MAKEFLAGS
 
 
 for dep in ${!depList[@]}; do
-if [[ -e deps/$dep ]]; then
+if [[ -e $DEPS_ROOT/$dep ]]; then
     echo "Existing $dep directory, no need to clone"
 else
     git clone ${depList[$dep]} $DEPS_ROOT/$dep || exit 1
