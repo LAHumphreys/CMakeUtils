@@ -21,6 +21,21 @@ fi
 MAKEFLAGS="j${NPROCESSORS}"
 export MAKEFLAGS
 
+for dep in ${!bzipList[@]}; do
+if [[ -e $DEPS_ROOT/$dep ]]; then
+    echo "Existing $dep directory, no need to get"
+else
+    pushd $DEPS_ROOT
+    mkdir $dep
+    pushd $dep
+    wget ${bzipList[$dep]} || exit 1
+    bunzip2 *.bz2
+    tar -xvf *.tar
+    rm *.tar
+    popd
+    popd
+fi
+done
 
 for dep in ${!depList[@]}; do
 if [[ -e $DEPS_ROOT/$dep ]]; then
@@ -41,14 +56,20 @@ for dep in ${!depList[@]}; do
         ./buildDeps.sh $DEPS_ROOT || exit 1
     fi
 
+    # CMake project?
+    if [[ -e CMakeLists.txt ]]; then
+        pushd build || exit 1
 
-    pushd build || exit 1
+        cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH:PATH=$DEPS_CMAKE_DEPO" "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" .. || exit 1
+        make -j 3 || exit 1
+        make install || exit 1
 
-    cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH:PATH=$DEPS_CMAKE_DEPO" "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" .. || exit 1
-    make -j 3 || exit 1
-    make install || exit 1
+        popd || exit 1
+    elif [[ -e Makefile ]]; then
+        DEPS_ROOT=$DEPS_ROOT make -j 3 || exit 1
+        INSTALL_PREFIX=$DEPS_BUILD DEPS_ROOT=$DEPS_ROOT make install || exit 1
+    fi
 
-    popd || exit 1
 
     popd || exit 1
 done
