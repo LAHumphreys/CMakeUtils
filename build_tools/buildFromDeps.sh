@@ -32,6 +32,8 @@ if [[ -e "$DEPS_BUILD/include/gtest/gtest.h" ]]; then
     export GTEST_ROOT="$DEPS_BUILD"
 fi
 
+export DEPS_BUILD
+
 mkdir -p Build
 cd Build
 cmake "-DCMAKE_MODULE_PATH:PATH=$DEPS_LOCATION" -DCMAKE_BUILD_TYPE=Release "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" "-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION" .. || exit 1
