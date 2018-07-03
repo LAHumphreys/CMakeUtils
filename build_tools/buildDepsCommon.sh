@@ -3,6 +3,7 @@ if [[ "$DEPS_ROOT" == "" ]]; then
     echo "No deps directory (DEPS_ROOT) provided, falling back to: $DEPS_ROOT"
 fi
 DEPS_BUILD=$DEPS_ROOT/build
+export DEPS_BUILD
 
 DEPS_CMAKE_DEPO=$DEPS_BUILD/lib/cmake
 mkdir -p $DEPS_BUILD
