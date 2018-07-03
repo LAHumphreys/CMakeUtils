@@ -61,7 +61,7 @@ for dep in ${!depList[@]}; do
     if [[ -e CMakeLists.txt ]]; then
         pushd build || exit 1
 
-        cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_PREFIX_PATH:PATH=$DEPS_CMAKE_DEPO" "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" .. || exit 1
+        cmake -DCMAKE_BUILD_TYPE=Release "-DCMAKE_MODULE_PATH:PATH=$DEPS_CMAKE_DEPO" "-DCMAKE_PREFIX_PATH:PATH=$DEPS_CMAKE_DEPO" "-DCMAKE_INSTALL_PREFIX:PATH=$DEPS_BUILD" .. || exit 1
         make -j 3 || exit 1
         make install || exit 1
 
