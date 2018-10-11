@@ -32,9 +32,10 @@ if [[ "$DEPS_ROOT" == "" ]]; then
     DEPS_ROOT=$PWD/deps
     echo "No deps directory (DEPS_ROOT) provided, falling back to: $DEPS_ROOT"
 fi
+DEPS_PREFIX="$DEPS_ROOT/build"
 DEPS_LOCATION="$DEPS_ROOT/build/lib/cmake"
 if [[ -e $DEPS_LOCATION ]]; then
-    DEPS_FLAGS="-DCMAKE_PREFIX_PATH:PATH=$DEPS_LOCATION -DCMAKE_MODULE_PATH:PATH=$DEPS_LOCATION"
+    DEPS_FLAGS="-DCMAKE_PREFIX_PATH:PATH=$DEPS_PREFIX -DCMAKE_MODULE_PATH:PATH=$DEPS_LOCATION"
 else
     DEPS_FLAGS=""
 fi
