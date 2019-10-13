@@ -63,7 +63,7 @@ cd ..
 
 if [[ $pushToCoveralls == true ]]; then
     # Post the coveralls result
-    coveralls -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  gcov-7 $@
+    coveralls -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  gcov-8 $@
 fi
 
 exit 0
