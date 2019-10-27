@@ -67,7 +67,9 @@ cd ..
 
 if [[ $pushToCoveralls == true ]]; then
     # Post the coveralls result
-    coveralls --gcov-options '\-lp' -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  $GCOV $@
+    coveralls --verbose --gcov-options '\-lp' -r . -b Coverage -e CMakeUtils -e dep -e deps  -e Build -e test $COVERALLS_FLAGS --gcov  $GCOV $@
+else
+    coveralls --verbose --gcov-options '\-lp' -r . -b Coverage -e CMakeUtils -e dep -e deps  -e Build -e test $COVERALLS_FLAGS --gcov  $GCOV $@ --dump cpp_coveralls_output.json
 fi
 
 exit 0
