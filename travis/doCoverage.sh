@@ -14,6 +14,10 @@ if [[ "$1" == "-nopush" ]]; then
     shift
 fi
 
+if [[ "$GCOV" == "" ]]; then
+    GCOV="gcov"
+fi
+
 # if possible, ask for the precise number of processors,
 # otherwise take 2 processors as reasonable default; see
 # https://docs.travis-ci.com/user/speeding-up-the-build/#Makefile-optimization
@@ -63,7 +67,7 @@ cd ..
 
 if [[ $pushToCoveralls == true ]]; then
     # Post the coveralls result
-    coveralls -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  gcov-8 $@
+    coveralls --gcov-options '\-lp' -r . -b Coverage -e CMakeUtils -e dep -e deps -e Coverage/CmakeFiles -e Build -e test $COVERALLS_FLAGS --gcov  $GCOV $@
 fi
 
 exit 0
