@@ -9,13 +9,13 @@ set -evx
 
 pushToCoveralls=true
 
-if [[ "$1" == "-nopush" ]]; then
-    pushToCoveralls=false
-    shift
-fi
-
 if [[ "$GCOV" == "" ]]; then
     GCOV="gcov"
+fi
+
+if [[ "$1" == "--nopush" ]]; then
+    pushToCoveralls=false
+    shift
 fi
 
 # if possible, ask for the precise number of processors,
@@ -49,27 +49,84 @@ if [[ -e "$DEPS_ROOT/include/gtest/gtest.h" ]]; then
     export GTEST_ROOT="$DEPS_ROOT"
 fi
 
+SRC_ROOT="$PWD"
+
 # Generate the build tree
 mkdir Coverage || true
 cd Coverage
+
+# START: LCOV BUILD
+# We need a bleeding edge lcov so that it can read gcc's new JSON format file
+#
+# This can be removed when travis supports an lcov>=1.14-2
+git clone https://github.com/linux-test-project/lcov.git
+
+pushd lcov
+mkdir lcov_install
+DESTDIR=lcov_install make install
+_LCOV="$PWD/lcov_install/usr/local/bin/lcov"
+popd
+#
+# END: LCOV BUILD
+
+function LCov {
+    $_LCOV --gcov-tool $GCOV $@
+}
+
+function CombineLCovFilesInto {
+    output_file=$1
+    shift
+    args="--output-file=$output_file "
+    for f in $@; do
+        args+="-a $f "
+    done
+    LCov $args
+
+}
+
+function RemoveFromLCOVFile {
+    lcov_file=$1
+    pattern=$2
+
+    set -o noglob
+    LCov --output-file=$lcov_file --remove $lcov_file $@
+    set +o noglob
+
+}
+
+
 cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
       -DCMAKE_BUILD_TYPE=Coverage \
       $DEPS_FLAGS  \
       --build . .. || exit
 
+
 # Build the Code
 make || exit
 
-# Run the tests
+lcov_baseline_file="$PWD/lcov_baseline.info"
+lcov_test_run_file="$PWD/lcov_test_run.info"
+lcov_accumulated_file="$PWD/lcov.info"
+
+LCov --no-external --capture  -b $SRC_ROOT -d . -i --output-file="$lcov_baseline_file" || exit 1
+
 make test || exit
+
+LCov --no-external --capture  -b $SRC_ROOT -d . --output-file="$lcov_test_run_file" || exit 1
 
 cd ..
 
+CombineLCovFilesInto $lcov_accumulated_file $lcov_baseline_file $lcov_test_run_file
+
+RemoveFromLCOVFile $lcov_accumulated_file "$PWD/deps/*" "$PWD/test/*" "$LCOV_FILTERS"
+
+echo "REPORTED_FILES: The following source files are reported by lcov analysis of the notes files"
+LCov --list $lcov_accumulated_file
+
 if [[ $pushToCoveralls == true ]]; then
-    # Post the coveralls result
-    coveralls --verbose --gcov-options '\-lp' -r . -b Coverage -e CMakeUtils -e dep -e deps  -e Build -e test $COVERALLS_FLAGS --gcov  $GCOV $@
+    cpp-coveralls --root . --no-gcov --lcov-file=$lcov_accumulated_file $COVERALLS_FLAGS
 else
-    coveralls --verbose --gcov-options '\-lp' -r . -b Coverage -e CMakeUtils -e dep -e deps  -e Build -e test $COVERALLS_FLAGS --gcov  $GCOV $@ --dump cpp_coveralls_output.json
+    genhtml -f --demangle-cpp --legend --num-spaces 4 -s "$lcov_accumulated_file" --output-directory="Coverage/coverhtml"
 fi
 
 exit 0
