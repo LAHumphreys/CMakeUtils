@@ -126,7 +126,7 @@ LCov --list $lcov_accumulated_file
 if [[ $pushToCoveralls == true ]]; then
     cpp-coveralls --root . --no-gcov --lcov-file=$lcov_accumulated_file $COVERALLS_FLAGS
 else
-    genhtml -f --demangle-cpp --legend --num-spaces 4 -s "$lcov_accumulated_file" --output-directory="Coverage/coverhtml"
+    genhtml --demangle-cpp --legend --num-spaces 4 -s "$lcov_accumulated_file" --output-directory="Coverage/coverhtml"
 fi
 
 exit 0
