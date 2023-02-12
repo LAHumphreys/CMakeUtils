@@ -62,6 +62,7 @@ cd Coverage
 git clone https://github.com/linux-test-project/lcov.git
 
 pushd lcov
+git checkout v1.16
 mkdir lcov_install
 DESTDIR=lcov_install make install
 _LCOV="$PWD/lcov_install/usr/local/bin/lcov"
@@ -98,7 +99,7 @@ function RemoveFromLCOVFile {
 cmake -DCMAKE_CXX_FLAGS=$CXX_FLAGS \
       -DCMAKE_BUILD_TYPE=Coverage \
       $DEPS_FLAGS  \
-      --build . .. || exit
+      .. || exit
 
 
 # Build the Code
